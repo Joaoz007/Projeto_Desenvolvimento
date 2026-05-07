@@ -6,69 +6,145 @@ Siga os passos abaixo para rodar o projeto localmente:
 
 ---
 
-## 🧪 Ambiente Local (Node.js direto)
+## ⚙️ Configuração da Aplicação
 
 1. Clonar o repositório:
 
-   ```sh
-   git clone https://github.com/luan-tavares/unifaat-2026-dw-project
-   ```
+```sh
+git clone https://github.com/luan-tavares/unifaat-2026-dw-project
+```
 
 2. Entrar na pasta do projeto:
 
-   ```sh
-   cd unifaat-2026-dw-project
-   ```
+```sh
+cd unifaat-2026-dw-project
+```
 
 3. Instalar as dependências:
 
-   ```sh
-   npm install
-   ```
+```sh
+npm install
+```
 
-5. Iniciar o servidor:
+4. Copiar o arquivo `.env` (**escolha apenas um, dependendo do seu sistema**):
 
-   ```sh
-   node _web.js
-   ```
+Linux / Mac:
+```sh
+cp .env.example .env
+```
 
-6. (Opcional) Instalar o `nodemon` globalmente e iniciar o servidor com ele:
+Windows (CMD):
+```sh
+copy .env.example .env
+```
 
-   ```sh
-   npm install -g nodemon
-   nodemon _web.js
-   ```
+5. Editar o arquivo `.env` e definir a senha do banco (**ALTERE AQUI**):
 
-   Ou instalar localmente e executar direto do `.bin`:
+```env
+POSTGRES_HOST=localhost
+POSTGRES_DB=unifaat_dw
+POSTGRES_PORT=6789
+POSTGRES_USER=unifaat_user
+POSTGRES_PASSWORD=**COLOQUE_SUA_SENHA_AQUI**
 
-   ```sh
-   npm install --save-dev nodemon
-   ./node_modules/.bin/nodemon _web.js
-   ```
+NODE_WEB_PORT=3000
+```
 
-O servidor estará disponível em: [http://localhost:3000](http://localhost:3000)
+---
+
+## 🚀 Servidor Backend Node
+
+6. Iniciar o servidor:
+
+```sh
+node _web.js
+```
+
+O servidor estará disponível em: http://localhost:3000
+
+---
+
+## 🐳 Docker
+
+Após configurar o `.env`, basta subir os containers:
+
+```sh
+docker compose up
+```
+
+O servidor web estará disponível em: http://localhost:8080
+
+---
+
+## 🔄 Nodemon (Opcional)
+
+Para desenvolvimento com reload automático:
+
+Global:
+```sh
+npm install -g nodemon
+nodemon _web.js
+```
+
+Local:
+```sh
+npm install --save-dev nodemon
+./node_modules/.bin/nodemon _web.js
+```
 
 ---
 
 ## 🧭 Estrutura do Projeto
 
-O projeto está organizado nas seguintes pastas principais:
-
 - `app/`
-  - Contém as regras de negócio da aplicação.
-  - Em `app/Controllers/` estão os arquivos que tratam as rotas e retornam o conteúdo ao usuário, como `ListFilesController.js` e `GetFileController.js`.
+  - Regras de negócio da aplicação.
+  - `app/Controllers/`: controllers que tratam as rotas.
+
 - `bootstrap/`
-  - Guarda a inicialização e as configurações base do app.
-  - `app.js` contém a função de bootstrap da aplicação e `config.js` define constantes usadas em todo o projeto.
+  - Inicialização da aplicação.
+  - `app.js` e `config.js`.
+
+- `config/`
+  - Arquivos de configuração.
+
+- `database/`
+  - Conexões com banco de dados.
+  - `database/connections/`: conexão com Postgres.
+
+- `docker/`
+  - Configurações de containers.
+  - `docker/postgres/init`: scripts de inicialização do banco.
+
 - `public/`
-  - Pasta de arquivos estáticos servidos pelo servidor.
-  - Inclui recursos acessíveis diretamente pelo navegador, como `404.html`.
+  - Arquivos estáticos.
+
 - `routes/`
-  - Contém o roteador principal da aplicação.
-  - `router.js` define as rotas HTTP, registra o middleware estático e trata o fallback para 404.
+  - Definição das rotas HTTP.
+
 - `storage/`
-  - Utilizada para armazenar dados ou arquivos de exemplo do servidor.
-  - `arquivo.txt` é lido pela rota `/arquivo` e enviado como resposta.
-- `node_modules/`
-  - Pasta gerada pelo `npm install` com todas as dependências do projeto.
-  - Não deve ser commitada no Git.
+  - Armazenamento de arquivos/dados.
+
+- `_web.js`
+  - Entrypoint da aplicação.
+
+- `.env`
+  - Variáveis de ambiente.
+
+- `.env.example`
+  - Exemplo de variáveis.
+
+- `docker-compose.yml`
+  - Orquestração dos containers.
+
+- `package.json`
+  - Dependências e scripts.
+
+---
+
+## 📦 Containers Docker
+
+| Container           | Host            | Porta Interna | Porta Externa (localhost) |
+|--------------------|-----------------|---------------|---------------|
+| postgres-container | postgres_host   | 5432          | 6789          |
+| nginx-container | nginx-container   | 80          | 8080          |
+| nodeweb-container | nodeweb_host   | 3000          | -         |

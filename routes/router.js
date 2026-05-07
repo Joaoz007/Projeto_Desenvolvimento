@@ -4,6 +4,10 @@ import path from 'path';
 import CONSTANTS from '../bootstrap/config.js';
 import ListFilesController from '../app/Controllers/ListFilesController.js';
 import GetFileController from '../app/Controllers/GetFileController.js';
+import Return404Controller from '../app/Controllers/Return404Controller.js';
+import userRouter from './apis/userRouter.js';
+import addressRouter from './apis/addressRouter.js';
+import EnvironmentController from '../app/Controllers/EnvironmentController.js';
 
 const router = Router();
 
@@ -17,11 +21,18 @@ router.get('/', ListFilesController);
 /** Servir o public estaticamente */
 router.use(express.static(path.join(CONSTANTS.DIR, 'public')));
 
+/** APIS REST */
+
+/** Users */
+router.use("/users", userRouter);
+
+/** Address - TF 09 */
+router.use("/addresses", addressRouter);
+
+/** Environment - TF 10 */
+router.get("/ambiente", EnvironmentController);
+
 /** Fallback 404 para arquivos/páginas não encontrados */
-router.use((req, res) => {
-    return res.status(404).sendFile(
-        path.join(CONSTANTS.DIR, 'public', '404.html')
-    );
-});
+router.use(Return404Controller);
 
 export default router;
